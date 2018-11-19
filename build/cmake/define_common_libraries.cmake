@@ -38,21 +38,28 @@ find_package(NetCDF 4 MODULE REQUIRED)
 include_directories(${NETCDF_INCLUDE_DIRS})
 link_libraries(${NETCDF_LIBRARIES})
 
+if (BUILD_VIEWER)
+
+    # GDAL
+    if (GDAL_ROOT)
+        message(STATUS "GDAL_ROOT: ${GDAL_ROOT}")
+        set(ENV{GDAL_ROOT} ${GDAL_ROOT})
+    endif ()
+    find_package(GDAL 2 REQUIRED)
+    include_directories(${GDAL_INCLUDE_DIRS})
+
+endif()
+
 # g2clib
-include_directories("${CMAKE_SOURCE_DIR}/src/shared_base/libs/g2clib")
+include_directories("${CMAKE_SOURCE_DIR}/src/shared_base/libs/g2clib/src")
 
-# wxhgversion
+# lsversion
+include_directories("${CMAKE_SOURCE_DIR}/src/shared_base/libs/lsversion/src")
+include_directories("${CMAKE_BINARY_DIR}")
+
+# lsversion
 if (USE_GUI)
-    set(USE_WXHGVERSION 0)
-
-    #    set(USE_WXHGVERSION 1)
-    #    ExternalProject_Add(wxhgversion
-    #            URL "https://bitbucket.org/terranum/wxhgversion/get/tip.tar.gz"
-    #            PATCH_COMMAND cp build/use_wxhgversion.cmake CMakeLists.txt
-    #            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR}
-    #            )
-    #    include_directories(${EXTERNAL_DIR}/include)
-    #    link_directories(${EXTERNAL_DIR}/lib)
+    set(USE_VERSION 1)
 else (USE_GUI)
-    set(USE_WXHGVERSION 0)
+    set(USE_VERSION 0)
 endif (USE_GUI)
